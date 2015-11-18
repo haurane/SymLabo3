@@ -26,5 +26,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world"/>
+    <TextView
+        android:id="@+id/very_secret_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/very_secret_string"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/secret_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/secret_string"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/public_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_secret_string"
+        android:visibility="visible"/>
 
 </LinearLayout>

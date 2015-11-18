@@ -23,6 +23,9 @@ public class MainActivity extends Activity {
     private EditText editMail;
     private EditText editPWD;
     private TextView textViewResult;
+    private TextView verySecretView;
+    private TextView secretView;
+    private TextView publicView;
     private Button loginButton;
 
     /* Stuff for NFC */
@@ -56,6 +59,9 @@ public class MainActivity extends Activity {
         editMail = (EditText) findViewById(R.id.editMail);
         editPWD = (EditText) findViewById(R.id.editPWD);
         loginButton = (Button) findViewById(R.id.loginButton);
+        verySecretView = (TextView) findViewById(R.id.very_secret_view);
+        secretView = (TextView) findViewById(R.id.secret_view);
+        publicView = (TextView) findViewById(R.id.public_view);
         currAccredLevel = 0;
 
 
@@ -65,6 +71,9 @@ public class MainActivity extends Activity {
                 if(checkCredentials()){
                     currAccredLevel = MAX_ACCRED_LEVEL;
                     textViewResult.setText("Credential ok ! You have now accreditation level" + currAccredLevel);
+                    verySecretView.setVisibility(View.VISIBLE);
+                    secretView.setVisibility(View.VISIBLE);
+
                 } else {
                     currAccredLevel = 0;
                     textViewResult.setText("Login failed ! You dont have access to this phone");
@@ -129,12 +138,12 @@ public class MainActivity extends Activity {
         integrator.initiateScan();
     }
 
-    private class DecreaseAuthLevelActivity extends AsyncTask<int, int, int>{
+ /*   private class DecreaseAuthLevelActivity extends AsyncTask<int, int, int>{
 
         @Override
         protected int doInBackground(int... params) {
             if (true);
             return 0;
         }
-    }
+    }*/
 }

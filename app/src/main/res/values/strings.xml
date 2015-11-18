@@ -6,5 +6,10 @@
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="login">Log in</string>
+    <string name="very_secret_string">This is a very secret string that should be shown only
+    on max authentification level</string>
+    <string name="secret_string">This is a secret string that should be shown only
+    on max and mid authentification level</string>
+    <string name="not_secret_string">This is a normal string that should always be shown</string>
     <string name="empty_tag"></string>
 </resources>
