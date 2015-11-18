@@ -3,13 +3,14 @@ package com.sym.kobel.labo3;
 import android.app.Activity;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -30,10 +31,21 @@ public class MainActivity extends Activity {
     /* Variables for checks */
     private String login, passwd;
 
+    /* Hard Coded credentials */
+    private String hcLogin = "abc@def.ch";
+    private String hcPasswd = "123abc";
+
+    /* others */
+    private static final int MAX_ACCRED_LEVEL = 10;
+    private static final int MED_ACCRED_LEVEL = 5;
+    private static final int MIN_ACCRED_LEVEL = 1;
+
+    private static int currAccredLevel;
+
     private boolean checkCredentials(){
         login = editMail.getText().toString();
 		passwd = editPWD.getText().toString();
-        return true;
+        return login.equals(hcLogin) && passwd.equals(hcPasswd);
     }
 
     @Override
@@ -44,7 +56,21 @@ public class MainActivity extends Activity {
         editMail = (EditText) findViewById(R.id.editMail);
         editPWD = (EditText) findViewById(R.id.editPWD);
         loginButton = (Button) findViewById(R.id.loginButton);
+        currAccredLevel = 0;
 
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkCredentials()){
+                    currAccredLevel = MAX_ACCRED_LEVEL;
+                    textViewResult.setText("Credential ok ! You have now accreditation level" + currAccredLevel);
+                } else {
+                    currAccredLevel = 0;
+                    textViewResult.setText("Login failed ! You dont have access to this phone");
+                }
+            }
+        });
         //nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         /* Check if Nfc is available */
@@ -101,5 +127,14 @@ public class MainActivity extends Activity {
     public void checkQRCode() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.initiateScan();
+    }
+
+    private class DecreaseAuthLevelActivity extends AsyncTask<int, int, int>{
+
+        @Override
+        protected int doInBackground(int... params) {
+            if (true);
+            return 0;
+        }
     }
 }
