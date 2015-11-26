@@ -136,12 +136,7 @@ public class Authentication extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 
 	    super.onCreate(savedInstanceState);
-		/*
-		* Set up user interface window as you like it...
-	    setContentView(...);
-		* BLA BLA BLA
-		*
-		*/
+
         // NFC
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);

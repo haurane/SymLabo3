@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -18,7 +19,11 @@ import com.google.zxing.integration.android.IntentResult;
 public class MainActivity extends Activity {
 
     private static final String APP_TAG = "labo3";
-
+    /* others */
+    private static final int MAX_ACCRED_LEVEL = 10;
+    private static final int MED_ACCRED_LEVEL = 5;
+    private static final int MIN_ACCRED_LEVEL = 1;
+    private static int currAccredLevel;
     /* View related elements */
     private EditText editMail;
     private EditText editPWD;
@@ -27,23 +32,14 @@ public class MainActivity extends Activity {
     private TextView secretView;
     private TextView publicView;
     private Button loginButton;
-
     /* Stuff for NFC */
     private NfcAdapter nfcAdapter;
-
+    private boolean hasNFC;
     /* Variables for checks */
     private String login, passwd;
-
     /* Hard Coded credentials */
     private String hcLogin = "abc@def.ch";
     private String hcPasswd = "123abc";
-
-    /* others */
-    private static final int MAX_ACCRED_LEVEL = 10;
-    private static final int MED_ACCRED_LEVEL = 5;
-    private static final int MIN_ACCRED_LEVEL = 1;
-
-    private static int currAccredLevel;
 
     private boolean checkCredentials(){
         login = editMail.getText().toString();
@@ -80,20 +76,23 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        //nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         /* Check if Nfc is available */
-        /*if(nfcAdapter == null){
-            Toast.makeText(this,"No NFC available", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-        if(!nfcAdapter.isEnabled()){
-            textViewResult.setText("Ooops nfc is disabled");
+        if(nfcAdapter == null){
+            Toast.makeText(this,"No NFC available\n" +
+                    "You will not be able to log into highest security", Toast.LENGTH_LONG).show();
+            hasNFC = false;
         } else {
-            textViewResult.setText("We have nfc");
-        }*/
+            hasNFC = true;
+        }
+        if(hasNFC){
+            if(!nfcAdapter.isEnabled()){
+                textViewResult.setText("Ooops nfc is disabled");
+            } else {
+                textViewResult.setText("We have nfc");
+            }
+        }
 
 
 
