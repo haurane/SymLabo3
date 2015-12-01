@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,9 +21,7 @@ public class MainActivity extends Activity {
 
     private static final String APP_TAG = "labo3";
     /* others */
-    private static final int MAX_ACCRED_LEVEL = 10;
-    private static final int MED_ACCRED_LEVEL = 5;
-    private static final int MIN_ACCRED_LEVEL = 1;
+
     private static int currAccredLevel;
     /* View related elements */
     private EditText editMail;
@@ -35,17 +34,14 @@ public class MainActivity extends Activity {
     /* Stuff for NFC */
     private NfcAdapter nfcAdapter;
     private boolean hasNFC;
-    /* Variables for checks */
-    private String login, passwd;
-    /* Hard Coded credentials */
-    private String hcLogin = "abc@def.ch";
-    private String hcPasswd = "123abc";
 
-    private boolean checkCredentials(){
-        login = editMail.getText().toString();
-		passwd = editPWD.getText().toString();
-        return login.equals(hcLogin) && passwd.equals(hcPasswd);
-    }
+    private static final int MAX_ACCRED_LEVEL = 10;
+    private static final int MED_ACCRED_LEVEL = 5;
+    private static final int MIN_ACCRED_LEVEL = 1;
+
+    private AuthenticationWorker authent;
+    private static String TAG = MainActivity.class.getName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,22 +54,31 @@ public class MainActivity extends Activity {
         verySecretView = (TextView) findViewById(R.id.very_secret_view);
         secretView = (TextView) findViewById(R.id.secret_view);
         publicView = (TextView) findViewById(R.id.public_view);
+        authent = new AuthenticationWorker();
         currAccredLevel = 0;
 
+        authent.registerListener(new AuthentListener() {
+            @Override
+            public void handleAuthentification(Integer level) {
+                Log.d(TAG, "handleAuthentification " + level);
+
+                if(level == MAX_ACCRED_LEVEL){
+                    verySecretView.setVisibility(View.VISIBLE);
+                } else {
+                    verySecretView.setVisibility(View.INVISIBLE);
+                }
+                if (level >= MED_ACCRED_LEVEL){
+                    secretView.setVisibility(View.VISIBLE);
+                } else {
+                    secretView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkCredentials()){
-                    currAccredLevel = MAX_ACCRED_LEVEL;
-                    textViewResult.setText("Credential ok ! You have now accreditation level" + currAccredLevel);
-                    verySecretView.setVisibility(View.VISIBLE);
-                    secretView.setVisibility(View.VISIBLE);
-
-                } else {
-                    currAccredLevel = 0;
-                    textViewResult.setText("Login failed ! You dont have access to this phone");
-                }
+                authent.authent(editMail.getText().toString(), editPWD.getText().toString());
             }
         });
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -124,10 +129,11 @@ public class MainActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
-            // handle scan result
+            Toast.makeText(this,"Yeah scanned",Toast.LENGTH_LONG);
         }
         else {
             // Failed to read the damn thing!
+            Toast.makeText(this,"Nope",Toast.LENGTH_LONG);
         }
         // rest of the code
     }
