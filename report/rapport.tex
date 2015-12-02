@@ -1,0 +1,172 @@
+\documentclass[a4paper,11pt,titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[frenchb]{babel}
+\usepackage{lmodern}
+\usepackage[final,expansion=true,protrusion=true]{microtype}
+\usepackage[top=30mm,bottom=20mm,left=18mm,right=18mm,headheight=20mm]{geometry}
+\usepackage[hidelinks,unicode]{hyperref}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{kantlipsum}
+
+\title{SYM 2015\\--\\Utilisation de données environnementales}
+\author{%
+Laurent Girod \href{mailto:laurent.girod@heig-vd.ch}{\texttt{<laurent.girod@heig-vd.ch>}}\\%
+Nicolas Kobel \href{mailto:nicolas.kobel@heig-vd.ch}{\texttt{<nicolas.kobel@heig-vd.ch>}}%
+%Rick Wertenbroek \href{mailto:rick.wertenbroek@heig-vd.ch}{\texttt{<rick.wertenbroek@heig-vd.ch>}}\\%
+%Cyrill Zundler \href{mailto:cyrill.zundler@heig-vd.ch}{\texttt{<cyrill.zundler@heig-vd.ch>}}%
+}
+\date{\today}
+
+% Uncomment if sans serif font is preferred.
+%\renewcommand*{\familydefault}{\sfdefault}
+\renewcommand{\headrulewidth}{1pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2ex}
+
+\lhead{SYM 2015 -- Utilisation de données environnementales}
+\chead{}
+\rhead{\includegraphics[height=8mm]{logo.pdf}}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+\pagestyle{fancy}
+
+\begin{document}
+\maketitle{}
+\section{Balises NFC}
+\subsection*{Questions}
+\textit{Sachant que les collaborateurs de l'entreprise UBIQOMP SA se déplacent en véhiculant des
+informations extrêmement précieuses dans leurs dispositifs informatiques mobiles (munis de dispositifs de
+lecture NFC), et qu'ils sont amenés à se rendre dans des zones à risque, un expert a fait les estimations
+suivantes:}
+\begin{itemize}
+	\item \textit{La probabilité de vol d'un mobile par une personne malintentionnée et capable d'utiliser les
+		données à des fins préjudiciables pour la société est de 1\%}
+	\item \textit{La probabilité que le mot de passe puisse être découvert, soit par analyse des traces de doigts sur
+		l'écran, soit par observation en cours d'utilisation est de 5\%}
+	\item \textit{La probabilité de vol du porte-clés est de 0.1\%}
+	\item \textit{Environ 10\% des criminels susceptibles d'accéder aux données du mobile sait que le porte-clés
+		donne accès au mobile}
+\end{itemize}
+
+\textit{Quelle est la probabilité moyenne globale que des données soient perdues, dans le cas où il faut la
+balise ET le mot de passe, ainsi que dans le cas où il faut la balise OU le mot de passe, ou encore le cas où
+seule la balise est nécessaire? En d'autres termes, si l'on envoie cent collaborateurs dans la géographie,
+quel est le risque encouru de vol de données sensibles? Mettre vos conclusions en rapport avec l'inconfort
+subjectif de chaque solution.}
+
+Soient:
+\begin{itemize}
+	\item $M$ l'évènement ``le mobile est volé par une personne malintentionnée et capable d'utiliser les données
+		à des fins préjudiciables pour la société'',
+	\item $P$ l'évènement ``le mot de passe est découvert'',
+	\item $B$ l'évènement ``la balise (sur le porte-clés) est volée'',
+	\item $S$ l'évènement ``le criminel sais que le porte clé donne accès au mobile''.
+\end{itemize}
+
+On a les probabilités suivantes:
+\begin{align}
+	P(M) = 0.01 \\
+	P(P) = 0.05 \\
+	P(B) = 0.001 \\
+	P(S | M) = 0.1 \\
+\end{align}
+
+On suppose que toutes ces probabilités sont indépendantes.
+
+La probabilité que des données soient perdues dans le cas où il faut la balise \textbf{et} le mot de passe est:
+\begin{multline}
+	P(S\cap P\cap B)
+	= P(S) P(P) P(B)
+	= P(S | M) P(M) P(P) P(B)
+	\\
+	= 0.1\cdot 0.01\cdot 0.05\cdot 0.001
+	= 5.00\cdot 10^{-8}
+\end{multline}
+
+La probabilité de perte de données dans ce cas est donc 1 chance sur 20 milions.
+
+La probabilité que des données soient perdues dans le cas où il faut la balise \textbf{ou} le mot de passe est:
+\begin{multline}
+	P\left((S\cap B)\cup (M\cap P)\right)
+	= \left(P(S) P(B)\right) + \left(P(M) P(P)\right)
+	= \left(P(S | M) P(M) P(B)\right) + \left(P(M) P(P)\right)
+	\\
+	= (0.1\cdot 0.01\cdot 0.001) + (0.01\cdot 0.05)
+	= 5.01\cdot 10^{-4}
+\end{multline}
+
+La probabilité de perte de données dans ce cas est donc un peu plus que 1 chance sur 2000.
+
+La probabilité que des données soient perdues dans le cas où seule le mot de passe est nécessaire est:
+\begin{multline}
+	P\left(M\cap P\right)
+	= \left(P(M) P(P)\right)
+	= \left(P(M) P(P)\right)
+	\\
+	= (0.01\cdot 0.05)
+	= 5.00\cdot 10^{-4}
+\end{multline}
+
+La probabilité de perte de données dans ce cas est donc 1 chance sur 2000.
+
+La probabilité que des données soient perdues dans le cas où seule la balise est nécessaire est:
+\begin{multline}
+	P\left(S\cap B\right)
+	= \left(P(S) P(B)\right)
+	= \left(P(S | M) P(M) P(B)\right)
+	\\
+	= (0.1\cdot 0.01\cdot 0.001)
+	= 1.00\cdot 10^{-6}
+\end{multline}
+
+La probabilité de perte de données dans ce cas est donc 1 chance sur un milion.
+
+%Mettre vos conclusions en rapport avec l'inconfort subjectif de chaque solution.
+
+%TODO
+\kant[1]
+
+\textit{Peut-on améliorer la situation en introduisant un contrôle des informations d'authentification par un
+serveur éloigné (transmission d'un "hash" genre MD5 du mot de passe et de la balise NFC)? Si oui, à quelles
+conditions? Quels inconvénients?}
+
+
+\textit{Proposer une stratégie permettant à la société UBIQOMP SA d'améliorer grandement son bilan
+sécuritaire, en détailler les inconvénients pour les utilisateurs et pour la société.}
+
+\section{Codes barres}
+\subsection*{Questions}
+\textit{Comparer la technologie à codes-barres et la technologie NFC, du point de vue d'une utilisation dans
+des applications pour smartphones, dans une optique:}
+\begin{itemize}
+\item \textit{Professionnelle (Authentification dure, Lettres de créance, accès bases de données, clés de
+	chiffrage)}
+\item \textit{Grand public (ticketing, access control, e-paiement)}
+\item \textit{Ludique (preuves d'achat, identité électronique pour gaming, etc...)}
+\item \textit{Financier (coûts impliqués par le déploiement de la technologie, possibilités de recyclage, etc...)}
+\end{itemize}
+
+\textit{Est-il possible sans autres de remplacer la puce NFC par une carte à code QR dans l'exercice
+précédent, moyennant un simple  ajustement du code pour lire le code à barres. (Note : il existe de
+nombreux  générateurs  de codes  QR sur le web, comme par exemple
+\url{http://www.myfeelback.com/fr/generateur-qr-code-gratuit-personnalisable}).}
+
+\textit{L'un des projets que poursuit iict/useraware actuellement est l'identification de patients dans de
+grands centres hospitaliers. Reprendre les arguments développés dans le point précédent dans cette
+optique particulière, en tenant compte du fait que l'identification du patient est presque toujours couplée à
+celle du soignant qui effectue un acte médical envers ce patient.}
+
+\textit{Un autre projet qui a été entrepris en collaboration avec la société sysmosoft sa (et qui a aussi fait
+l'objet d'un projet de master à la HEIG-VD) est la reconnaissance  de contexte. Ainsi, selon le contexte dans
+lequel on se trouve, on va être plus ou moins tolérant vis-à-vis de l'accès à l'information. Imaginer les
+paramètres que l'on peut associer à un contexte, et pour chacun d'eux, estimer le degré de ``fiabilité'' de
+ce paramètre dans l'optique d'une méthode heuristique d'identification d'un contexte d'utilisation. Mettre
+en rapport les inconvénients et les avantages liés à l'utilisation du paramètre en question.}
+
+\end{document}
