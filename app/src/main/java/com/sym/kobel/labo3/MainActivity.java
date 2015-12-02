@@ -133,6 +133,7 @@ public class MainActivity extends Activity {
         if(nfcAdapter == null){
             Toast.makeText(this,"No NFC available\n" +
                     "You will not be able to log into highest security", Toast.LENGTH_LONG).show();
+            textViewResult.setText("There is no nfc, you won't be able to log into max clearance.");
             hasNFC = false;
         } else {
             hasNFC = true;
@@ -197,16 +198,22 @@ public class MainActivity extends Activity {
         integrator.initiateScan();
     }
 
+    @Override
     protected void onResume(){
         super.onResume();
-        setupForegroundDispatch(this, nfcAdapter);
+        if(nfcAdapter != null){
+            setupForegroundDispatch(this, nfcAdapter);
+        }
     }
 
+    @Override
     protected void onPause() {
         /**
          * Call this before onPause, otherwise an IllegalArgumentException is thrown as well.
          */
-        stopForegroundDispatch(this, nfcAdapter);
+        if(nfcAdapter != null) {
+            stopForegroundDispatch(this, nfcAdapter);
+        }
 
         super.onPause();
     }
