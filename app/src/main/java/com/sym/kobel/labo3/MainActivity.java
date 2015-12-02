@@ -29,6 +29,7 @@ public class MainActivity extends Activity {
 
     private static int currAccredLevel;
     /* View related elements */
+    private TextView textViewInfo;
     private EditText editMail;
     private EditText editPWD;
     private TextView textViewResult;
@@ -37,23 +38,37 @@ public class MainActivity extends Activity {
     private TextView publicView;
     private Button loginButton;
     private Button scanQRButton;
+    private TextView qrResult;
+
     /* Stuff for NFC */
     private NfcAdapter nfcAdapter;
     private boolean hasNFC;
     private NFCWorker nfcWorker;
 
-    private static final int MAX_ACCRED_LEVEL = 10;
-    private static final int MED_ACCRED_LEVEL = 5;
-    private static final int MIN_ACCRED_LEVEL = 1;
+    static final int MAX_ACCRED_LEVEL = 10;
+    static final int MED_ACCRED_LEVEL = 5;
+    static final int MIN_ACCRED_LEVEL = 1;
 
     private AuthenticationWorker authent;
+    private String[] nfcInfos;
     private static String TAG = MainActivity.class.getName();
+
+    /* Save instance State */
+    private final String STATE_VIS_SSECRET = "stateVisSSecret";
+    private final String STATE_VIS_SECRET = "stateVisSecret";
+    private final String STATE_QR_TYPE = "stateQRType";
+    private final String STATE_QR_CONTENT = "stateQRContent";
+
+    /* Stuff for QR */
+    private String qrContent;
+    private String qrType;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textViewInfo = (TextView) findViewById(R.id.textViewInstructions);
         textViewResult = (TextView) findViewById(R.id.textViewResult);
         editMail = (EditText) findViewById(R.id.editMail);
         editPWD = (EditText) findViewById(R.id.editPWD);
@@ -64,19 +79,21 @@ public class MainActivity extends Activity {
         publicView = (TextView) findViewById(R.id.public_view);
         authent = new AuthenticationWorker();
         nfcWorker = new NFCWorker();
+        qrResult = (TextView) findViewById(R.id.qrResult);
         currAccredLevel = 0;
+
 
         authent.registerListener(new AuthentListener() {
             @Override
             public void handleAuthentification(Integer level) {
                 Log.d(TAG, "handleAuthentification " + level);
 
-                if(level == MAX_ACCRED_LEVEL){
+                if (level == MAX_ACCRED_LEVEL) {
                     verySecretView.setVisibility(View.VISIBLE);
                 } else {
                     verySecretView.setVisibility(View.INVISIBLE);
                 }
-                if (level >= MED_ACCRED_LEVEL){
+                if (level >= MED_ACCRED_LEVEL) {
                     secretView.setVisibility(View.VISIBLE);
                 } else {
                     secretView.setVisibility(View.INVISIBLE);
@@ -87,7 +104,11 @@ public class MainActivity extends Activity {
         nfcWorker.registerListener(new NFCListener() {
             @Override
             public boolean handleNFC(String[] strings) {
-                textViewResult.setText(strings[0] + " " + strings[1]);
+                if (editMail.getText().length() == 0 || editPWD.getText().length() == 0){
+                    Toast.makeText(getApplicationContext(), "Please enter login and password", Toast.LENGTH_LONG);
+                    return false;
+                }
+                authent.authentNFC(editMail.getText().toString(),editPWD.getText().toString(),strings[0],strings[1]);
                 return true;
             }
         });
@@ -95,11 +116,8 @@ public class MainActivity extends Activity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editMail.getText().length() == 0 || editPWD.getText().length() == 0){
-                    Toast.makeText(getApplicationContext(), "Please enter login and password", Toast.LENGTH_LONG);
-                    return;
-                }
-                authent.authent(editMail.getText().toString(), editPWD.getText().toString());
+
+                authent.authentPasswd(editMail.getText().toString(), editPWD.getText().toString());
             }
         });
 
@@ -160,6 +178,9 @@ public class MainActivity extends Activity {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             Log.d(TAG, "onActivityResult Yeah scanned!!!!");
+            qrType = scanResult.getFormatName();
+            qrContent = scanResult.getContents();
+            qrResult.setText("Type of code : " + qrType + "\nContents : " + qrContent);
             textViewResult.setText(scanResult.getContents());
             Toast.makeText(this,"Yeah scanned",Toast.LENGTH_LONG);
         }
@@ -181,6 +202,15 @@ public class MainActivity extends Activity {
         setupForegroundDispatch(this, nfcAdapter);
     }
 
+    protected void onPause() {
+        /**
+         * Call this before onPause, otherwise an IllegalArgumentException is thrown as well.
+         */
+        stopForegroundDispatch(this, nfcAdapter);
+
+        super.onPause();
+    }
+
 
     public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
         Log.d(TAG, "setupForegroundDispatch 1");
@@ -190,7 +220,7 @@ public class MainActivity extends Activity {
 
         final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
 
-        IntentFilter[] filters = new IntentFilter[2];
+        IntentFilter[] filters = new IntentFilter[1];
         String[][] techList = new String[][]{};
 
         // Notice that this is the same filter as in our manifest.
@@ -198,22 +228,18 @@ public class MainActivity extends Activity {
         filters[0].addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
         filters[0].addCategory(Intent.CATEGORY_DEFAULT);
 
-        filters[1] = new IntentFilter();
-        filters[1].addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
-        filters[1].addAction(Intent.CATEGORY_DEFAULT);
         try {
             filters[0].addDataType(MIME_TEXT_PLAIN);
         } catch (IntentFilter.MalformedMimeTypeException e) {
             throw new RuntimeException("Check your mime type.");
         }
 
-        try{
-            filters[1].addDataType(MIME_TEXT_PLAIN);
-        }catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("Check your mime type.");
-        }
 
         adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
+    }
+
+    public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
+        adapter.disableForegroundDispatch(activity);
     }
 
     private void handleIntent(Intent intent){
@@ -223,21 +249,40 @@ public class MainActivity extends Activity {
 
             String type = intent.getType();
             if (MIME_TEXT_PLAIN.equals(type)) {
-
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 Log.d(TAG, "handleIntent " + tag.toString() + (nfcWorker == null));
                 nfcWorker.handleTag(tag);
             } else {
                 Log.d(TAG, "handleIntent false MIME");
             }
-
-
         }
-
-
     }
 
     protected void onNewIntent(Intent intent){
         handleIntent(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putInt(STATE_VIS_SSECRET, verySecretView.getVisibility());
+        savedInstanceState.putInt(STATE_VIS_SECRET, secretView.getVisibility());
+        savedInstanceState.putString(STATE_QR_CONTENT, qrContent);
+        savedInstanceState.putString(STATE_QR_TYPE, qrType);
+
+
+        super.onSaveInstanceState(savedInstanceState);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        qrContent = savedInstanceState.getString(STATE_QR_CONTENT);
+        qrType = savedInstanceState.getString(STATE_QR_TYPE);
+
+        if(qrContent != null && qrType != null){
+            qrResult.setText("Type of code : " + qrType + "\nContents : " + qrContent);
+        }
+
     }
 }

@@ -11,5 +11,12 @@
     <string name="secret_string">This is a secret string that should be shown only
     on max and mid authentification level</string>
     <string name="not_secret_string">This is a normal string that should always be shown</string>
+    <string name="instruction">Welcome 007.\n
+    This is your personal log-in app that does everything you wish (or not).\n
+    To log into medium clearance please enter your log in informations and click the button.\n
+    To log into maximum clearence please enter your log in informations and swipe your personnal
+    NFC tag.\n
+    To read any barcode (1D or 2D) click on the corresponding button.\n
+    Have a nice day !</string>
     <string name="empty_tag"></string>
 </resources>

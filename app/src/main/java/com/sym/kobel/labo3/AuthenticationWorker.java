@@ -1,6 +1,7 @@
 package com.sym.kobel.labo3;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -8,15 +9,12 @@ import android.util.Log;
  */
 public class AuthenticationWorker {
 
-    private static final int MAX_ACCRED_LEVEL = 10;
-    private static final int MED_ACCRED_LEVEL = 5;
-    private static final int MIN_ACCRED_LEVEL = 1;
 
     /* Hard Coded credentials */
     private final String hcLogin = "abc@def.ch";
     private final String hcPasswd = "123abc";
-    private final String hcNfcLogin = "AAA";
-    private final String hcNfcPasswd = "BBB";
+    private final String hcNfcLogin = "nicolas";
+    private final String hcNfcPasswd = "1234";
 
     /* Variables for checks */
     private String login, passwd;
@@ -34,8 +32,13 @@ public class AuthenticationWorker {
         listener = l;
     }
 
-    public boolean authent(String login, String passwd){
+    public boolean authentPasswd(String login, String passwd){
         new Authenticator().execute(login, passwd);
+        return true;
+    }
+
+    public boolean authentNFC(String login, String passwd, String nfcLogin, String nfcPasswd){
+        new Authenticator().execute(login,passwd,nfcLogin,nfcPasswd);
         return true;
     }
 
@@ -58,24 +61,24 @@ public class AuthenticationWorker {
             }
 
             if( login.equals(hcLogin) && passwd.equals(hcPasswd)){
-                currentAccred = MED_ACCRED_LEVEL;
+                currentAccred = MainActivity.MED_ACCRED_LEVEL;
                 if(params.length == 4 && nfcLogin.equals(hcNfcLogin) && nfcPasswd.equals(hcNfcPasswd)){
-                    currentAccred = MAX_ACCRED_LEVEL;
+                    currentAccred = MainActivity.MAX_ACCRED_LEVEL;
                 }
             }
 
 
 
-            while (currentAccred >= MIN_ACCRED_LEVEL){
+            while (currentAccred >= MainActivity.MIN_ACCRED_LEVEL){
                 try {
                     publishProgress(currentAccred);
-                    Thread.sleep(1000,0);
+                    Thread.sleep(2000,0);
                     currentAccred --;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            return MIN_ACCRED_LEVEL;
+            return MainActivity.MIN_ACCRED_LEVEL;
         }
 
         protected void onProgressUpdate(Integer... progress){
@@ -89,4 +92,5 @@ public class AuthenticationWorker {
             listener.handleAuthentification(i);
         }
     }
+
 }
