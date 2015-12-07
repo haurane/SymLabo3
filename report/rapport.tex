@@ -60,6 +60,8 @@ seule la balise est nécessaire? En d'autres termes, si l'on envoie cent collabo
 quel est le risque encouru de vol de données sensibles? Mettre vos conclusions en rapport avec l'inconfort
 subjectif de chaque solution.}
 
+Nous formalisons le problème ainsi:
+
 Soient:
 \begin{itemize}
 	\item $M$ l'évènement ``le mobile est volé par une personne malintentionnée et capable d'utiliser les données
@@ -89,7 +91,7 @@ La probabilité que des données soient perdues dans le cas où il faut la balis
 	= 5.00\cdot 10^{-8}
 \end{multline}
 
-La probabilité de perte de données dans ce cas est donc 1 chance sur 20 milions.
+La probabilité de perte de données dans ce cas est donc 1 chance sur 20 millions.
 
 La probabilité que des données soient perdues dans le cas où il faut la balise \textbf{ou} le mot de passe est:
 \begin{multline}
@@ -125,20 +127,78 @@ La probabilité que des données soient perdues dans le cas où seule la balise 
 	= 1.00\cdot 10^{-6}
 \end{multline}
 
-La probabilité de perte de données dans ce cas est donc 1 chance sur un milion.
+La probabilité de perte de données dans ce cas est donc 1 chance sur un million.
 
 %Mettre vos conclusions en rapport avec l'inconfort subjectif de chaque solution.
 
-%TODO
-\kant[1]
+Parmi les risques autre que le vol, viennent également le risque d'oubli du mot de passe et le risque de perte
+de la balise. Il faudrait aussi les prendre en compte, mais dans le cas de ce laboratoire, nous les ignoreront
+pour simplifier l'analyse de risque.
+
+Chacune de ces solutions complique un peu l'utilisation de l'application. Dans le cas d'un mot de passe,
+l'utilisateur doit l'entrer régulièrement avant de pouvoir utiliser une fonctionnalité critique de
+l'application. Dans le cas de la balise, l'utilisateur dit sortir son porte-clés et passer la balise sur le dos
+de son téléphone portable avant de pouvoir utiliser une fonctionnalité critique (ce qui implique que
+l'utilisateur devra aussi avoir son porte-clés sur lui à chaque fois qu'il accède à une de ces fonctionnalités
+critiques). Comme nous ignorons quel sera l'impact business d'un vol de donnée, les trois cas sont analysés, la
+solution à privilégier dépendra donc des données traitées par l'application.
+
+\paragraph{Mot de passe et balise}
+C'est la solution la plus contraignante pour l'utilisateur, puisqu'il devra entrer son mot de passe et sortir
+son porte-clés. Par contre, c'est la solution la plus sécurisée qu'il y ait, la probabilité d'un vol de donnée
+est d'une chance sur 20'000'000. Cette méthode sera donc a privilégier seulement dans le cas où les informations
+traitées seront de très grande importance, et qui seront accédées rarement (pour ne pas trop gêner l'utilisateur).
+
+\paragraph{Mot de passe ou balise}
+C'est la solution (sécurisée) la moins contraignante pour l'utilisateur, il pourra choisir soit d'entrer son
+mot de passe, soit de sortir son porte-clés. La sécurité offerte par cette solution n'est par contre pas très
+élevée, la probabilité d'un vol de donnée est d'un peu plus qu'une chance sur 2000. La sécurité est à peu près
+comparable à l'utilisation d'un mot de passe seul. Cette méthode sera donc a privilégier si les données traitées
+ne sont pas de trop grande importance, mais qu'il est quand même souhaitable de protéger (par exemple pour des
+raisons légales). C'est donc une solution a implémenter si on désire augmenter le confort d'utilisation de
+l'application, plus que sa sécurité.
+
+\paragraph{Balise seule}
+C'est une solution offrant une bonne sécurité, la probabilité d'un vol de donnée est d'une chance sur 1'000'000,
+et n'étant pas trop inconfortable pour l'utilisateur (il lui ``suffit'' de sortir son porte-clés). \c{C}a sera
+donc la solution à privilégier si les données traitées seront de grande importance, mais auxquelles l'utilisateur
+devra souvent accéder (utiliser la première solution serait alors trop gênant pour l'utilisateur).
 
 \textit{Peut-on améliorer la situation en introduisant un contrôle des informations d'authentification par un
 serveur éloigné (transmission d'un "hash" genre MD5 du mot de passe et de la balise NFC)? Si oui, à quelles
 conditions? Quels inconvénients?}
 
+Dans le scénario où les accréditations sont envoyées à un serveur distant qui renvoie ses accréditations pour
+permettre d'accéder aux données, il est possible d'améliorer un peu la sécurité, à condition que le serveur soit
+notifié qu'une accréditation a été compromise. Dans ce cas un voleur aura un temps limité pour tenter d'accéder
+aux données (le temps que l'annonce du vol soit rapporté). Comme il peut se passer une durée assez longue entre
+le vol et l'annonce du vol (quelques heures à quelques jours), il est possible que le voleur ait réussisse à
+accéder aux données dans ce délai. L'amélioration de la sécurité est donc modeste.
+
+Ces contrôles supplémentaires sont par contre très contraignant dans le cas d'une application mobile, les données
+ne seront accessibles que lorsqu'il est possible de se connecter au serveur. Pour palier (partiellement) à ce
+problème, une solution serait de donner une durée de vie à une accréditation du serveur, et que la connexion à ce
+dernier ne se fasse que ci cette durée de vie était dépassée. Mais même dans ce cas, il serait nécessaire de que
+l'application se connecte au serveur de temps à autre, et il n'est pas garanti qu'une telle connexion puisse être
+établie au moment ou elle serait nécessaire.
+
+Les mesures à mettre en place seraient donc assez lourdes, et seraient potentiellement très inconfortable pour
+l'utilisateur puisqu'elle pourraient l'empêcher de travailler.
 
 \textit{Proposer une stratégie permettant à la société UBIQOMP SA d'améliorer grandement son bilan
 sécuritaire, en détailler les inconvénients pour les utilisateurs et pour la société.}
+
+Comme les informations véhiculées sont \emph{extrêmement précieuses}, il est souhaitable de privilégier une bonne
+sécurité, nous pouvons donc déjà exclure la deuxième solution (mot de passe ou balise), car elle n'offre pas une
+sécurité suffisante.
+
+Parmi les deux solutions restantes, la première (mot de passe et balise) est un peu moins confortable d'utilisation
+que la deuxième (balise seule) car l'utilisateur doit taper son mot de passe en plus de sortir son porte-clés. Même
+si la première solution est théoriquement 20 fois plus sûre que la seconde, les deux sont des probabilités minimes.
+
+En supposant que les employés de l'entreprise aient souvent besoin d'accéder à ces données critiques, et qu'ils ne
+sont pas trop souvent dans ces endroits à risque, la deuxième solution sera à privilégier, pour des raisons de confort
+d'utilisation.
 
 \section{Codes barres}
 \subsection*{Questions}
