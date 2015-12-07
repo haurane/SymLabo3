@@ -211,21 +211,92 @@ des applications pour smartphones, dans une optique:}
 \item \textit{Financier (coûts impliqués par le déploiement de la technologie, possibilités de recyclage, etc...)}
 \end{itemize}
 
-Dans le contexte professionnel, on préférera la technologie NFC aux codes-barres.
-Le 
+\paragraph{Dans le domaine professionnel}
 
-Pour beaucoup d'applications grand public les codes-barres sont plus simple à mettre en place.
+Dans le domaine professionnel, nous préfererons l'utilisation de la technologie NFC à celle d'un code barre.
+Il est en effet possible moyennant les coûts à de (grandes) entreprises d'équipper leurs employés d'outils pour la lecture et l'utilisation de TAGS NFC.
 
+Les tags NFC sont aussi plus sûrs que des identificateurs de type codes barres qui eux sont (plus) vite perdus et simplement photocopiables.
+
+\paragraph{Dans le domaine Grand Public}
+
+Nous allons éxaminer le domaine grand public sous les trois angles suivants :
+
+\begin{itemize}
+\item Authentification permanente
+\item Authentification ponctuelle
+\item Réalité augmentée
+\end{itemize}
+
+\subparagraph{Authentification permanente}
+
+Une authentification permanente personnelle rapide et sûre est souvent souhaitable.
+Les technologies NFC y ont vu un succes relatif ces dérniers temps surtout en temps que mode de payement pour de petit montant.
+D'autres applications récentes comme le nouvel abonement de train CFF ainsi que des abonements de loisirs divers reposent aussi avec un succès divers sur ces technologies.
+
+Le débat sur la sécurité et la confidentialité de ces données ne sera pas mené ici, mais il est évident que la falsifications de ces données est moins facile que celle d'un simple code-barre une fois de plus simplement photocopiable.
+
+\subparagraph{Authentification ponctuelle}
+
+Lorsque il ne faut que s'authentifier une fois, ou qu'il faut montrer une preuve d'achat, les coûts liés au NFC dépassent son utilité.
+
+En effet, les dernières années ont montré que des code barres, quil soient imprimés ou affichés sur écran, ont une réelle utilité en tant que preuve d'achat.
+Que se soit au CFF ou dans divers festivals, les codes barres en tout genre remplacent peux à peux les billets classiques.
+
+Plus simples à garder sur soi et plus rapide à vérifier que des imprimés, ils offrent des avantages autant pour le client que pour le vendeur.
+
+\subparagraph{Réalité Augmentée}
+
+Les codes barres étant faciles à placer, copier et analyser ils deviennent de plus en plus un moyen d'informer des gens.
+Que se soit pour informer une personne de l'histoire d'un bâtiment, des risques d'un itinéraire en montagne ou simplement des prochains horraires du bus, un code barre peut donner des informations ponctuelles et précises.
+
+Les codes barres sont d'autant plus éfficaces que la majorité d'utilisateurs de systèmes mobiles sont équipés d'une caméra mais pas de lecteurs NFC.
+
+\paragraph{Utilisation Ludique}
+
+L'utilisation ludique des et des NFC et des codes barres peuvent se défendre.
+
+De plus en plus les développeurs de jeux veulent intégrer leur produit à la vie de tous les jours.
+Pour offrir une immérsion quasi totale à leur client, les applications mobiles viennent compléter l'offre classique.
+
+Ici la décision entre NFC et codes barres doit se faire sur la valeur ajoutée.
+
+Un code peut être un moyen éfficace pour faire gagner à un client un objet innobtaignable sinon.
+C'est un moyen éfficace d'attirer les colléctionneurs ou de fidéliser les nouveaux clients.
+Un seul code facilement distribuable peut aussi faire office de publicité pour l'entreprise.
+
+Des objet avec NFC peuvent être imaginés intéragir entre eux, ainsi créant des liens entre leurs possésseurs.
+De plus ils pourraient débloquer des objet pour la personne qui l'utilise avec le système de base.
+
+\paragraph{Considérations Financières}
+
+Un tag NFC nécécite un support matériel dédié.
+Il en résulte un coût élevé pour des petites productions.
+La distribution de tags NFC demande par cette liaison matérielle un éffort considérable.
+Par l'objet une fois crée est durable et peut être passé de main en main ou reprogrammé. 
+
+Un code barre peut être imprimé sur n'importe quel support, et ne demande donc comme invéstissement que du temps, du papier et de l'encre.
+Chacun peut en créer sur n'importe quel site proposant cette fonctionnalité (p.ex. \url{http://www.myfeelback.com/fr/generateur-qr-code-gratuit-personnalisable}).
+Il est parcontre très difficile de changer le contenu du code, à moins de le faire pointer vers un site qu'on peut modifier à coeur joie.
 
 \textit{Est-il possible sans autres de remplacer la puce NFC par une carte à code QR dans l'exercice
 précédent, moyennant un simple  ajustement du code pour lire le code à barres. (Note : il existe de
 nombreux  générateurs  de codes  QR sur le web, comme par exemple
 \url{http://www.myfeelback.com/fr/generateur-qr-code-gratuit-personnalisable}).}
 
+\paragraph{Utilisation de QR à la place de NFC}
+
+Il est relativement aisé de modifier le code de l'application d'authentification pour utiliser un code QR à la place d'une puce NFC.
+Le seul problème est celui de déchiffrer l'image, mais bien assez de programmes externes existent qui peuvent nous livrer le résultat.
+
 \textit{L'un des projets que poursuit iict/useraware actuellement est l'identification de patients dans de
 grands centres hospitaliers. Reprendre les arguments développés dans le point précédent dans cette
 optique particulière, en tenant compte du fait que l'identification du patient est presque toujours couplée à
 celle du soignant qui effectue un acte médical envers ce patient.}
+
+\paragraph{Identification d'un Patient}
+Il semblerait intéressant d'identifier le soignant par NFC, d'après les raisons données dans les considérations au niveau professionnel et au niveau d'identification permanente.
+Enregistrer un patient avec identification NFC serait trop cher pour les avantages offerts par la technologie.
 
 \textit{Un autre projet qui a été entrepris en collaboration avec la société sysmosoft sa (et qui a aussi fait
 l'objet d'un projet de master à la HEIG-VD) est la reconnaissance  de contexte. Ainsi, selon le contexte dans
@@ -233,5 +304,19 @@ lequel on se trouve, on va être plus ou moins tolérant vis-à-vis de l'accès 
 paramètres que l'on peut associer à un contexte, et pour chacun d'eux, estimer le degré de ``fiabilité'' de
 ce paramètre dans l'optique d'une méthode heuristique d'identification d'un contexte d'utilisation. Mettre
 en rapport les inconvénients et les avantages liés à l'utilisation du paramètre en question.}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
