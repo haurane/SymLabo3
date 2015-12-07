@@ -168,9 +168,27 @@ devra souvent accéder (utiliser la première solution serait alors trop gênant
 serveur éloigné (transmission d'un "hash" genre MD5 du mot de passe et de la balise NFC)? Si oui, à quelles
 conditions? Quels inconvénients?}
 
+Dans le scénario où les accréditations sont envoyées à un serveur distant qui renvoie ses accréditations pour
+permettre d'accéder aux données, il est possible d'améliorer un peu la sécurité, à condition que le serveur soit
+notifié qu'une accréditation a été compromise. Dans ce cas un voleur aura un temps limité pour tenter d'accéder
+aux données (le temps que l'annonce du vol soit rapporté). Comme il peut se passer une durée assez longue entre
+le vol et l'annonce du vol (quelques heures à quelques jours), il est possible que le voleur ait réussisse à
+accéder aux données dans ce délai. L'amélioration de la sécurité est donc modeste.
+
+Ces contrôles supplémentaires sont par contre très contraignant dans le cas d'une application mobile, les données
+ne seront accessibles que lorsqu'il est possible de se connecter au serveur. Pour palier (partiellement) à ce
+problème, une solution serait de donner une durée de vie à une accréditation du serveur, et que la connexion à ce
+dernier ne se fasse que ci cette durée de vie était dépassée. Mais même dans ce cas, il serait nécessaire de que
+l'application se connecte au serveur de temps à autre, et il n'est pas garanti qu'une telle connexion puisse être
+établie au moment ou elle serait nécessaire.
+
+Les mesures à mettre en place seraient donc assez lourdes, et seraient potentiellement très inconfortable pour
+l'utilisateur puisqu'elle pourraient l'empêcher de travailler.
 
 \textit{Proposer une stratégie permettant à la société UBIQOMP SA d'améliorer grandement son bilan
 sécuritaire, en détailler les inconvénients pour les utilisateurs et pour la société.}
+
+%TODO
 
 \section{Codes barres}
 \subsection*{Questions}
